@@ -1,6 +1,7 @@
 package com.jfco.takitate.auth.services;
 
 import com.jfco.takitate.auth.configs.AuthKeyCloakProps;
+import com.jfco.takitate.common.constants.Error;
 import com.jfco.takitate.common.dtos.request.KeyCloakUser;
 import com.jfco.takitate.common.dtos.request.Login;
 import com.jfco.takitate.common.dtos.request.User;
@@ -53,7 +54,7 @@ public class KeyCloakProxy implements AuthService {
       return tokenResponse.getBody();
     } catch (HttpStatusCodeException sce) {
       log.error("Unable to generate admin token : {}", sce.getResponseBodyAsString());
-      throw new HttpClientException(sce.getStatusCode(), sce.getMessage());
+      throw new HttpClientException(sce.getStatusCode(), Error.KEYCLOAK, sce.getMessage());
     }
   }
 
@@ -71,7 +72,8 @@ public class KeyCloakProxy implements AuthService {
     kcUser.setFirstName(user.getFirstName());
     kcUser.setLastName(user.getLastName());
     kcUser.setEmail(user.getEmail());
-    kcUser.setCredentials(Collections.singletonList(new KeyCloakUser.Credential(user.getPassword())));
+    kcUser.setCredentials(
+        Collections.singletonList(new KeyCloakUser.Credential(user.getPassword())));
 
     HttpEntity<KeyCloakUser> request = new HttpEntity<>(kcUser, headers);
 
@@ -80,7 +82,7 @@ public class KeyCloakProxy implements AuthService {
       return true;
     } catch (HttpStatusCodeException sce) {
       log.error("Unable to create new user : {}", sce.getResponseBodyAsString());
-      throw new HttpClientException(sce.getStatusCode(), sce.getMessage());
+      throw new HttpClientException(sce.getStatusCode(), Error.KEYCLOAK, sce.getMessage());
     }
   }
 
@@ -106,7 +108,7 @@ public class KeyCloakProxy implements AuthService {
       return tokenResponse.getBody();
     } catch (HttpStatusCodeException sce) {
       log.error("Unable to login user and generate authToken : {}", sce.getResponseBodyAsString());
-      throw new HttpClientException(sce.getStatusCode(), sce.getMessage());
+      throw new HttpClientException(sce.getStatusCode(), Error.KEYCLOAK, sce.getMessage());
     }
   }
 }

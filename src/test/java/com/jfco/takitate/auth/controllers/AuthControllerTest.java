@@ -1,10 +1,10 @@
 package com.jfco.takitate.auth.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jfco.takitate.auth.services.AuthService;
 import com.jfco.takitate.common.dtos.request.Login;
 import com.jfco.takitate.common.dtos.request.User;
 import com.jfco.takitate.common.dtos.response.KeyCloakAccessToken;
-import com.jfco.takitate.auth.services.AuthService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -72,12 +72,15 @@ class AuthControllerTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(objectMapper.writeValueAsString(user)))
         .andDo(print())
-        .andExpect(status().isBadRequest());
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.id", is("100001")))
+        .andExpect(jsonPath("$.code", is("BAD_REQUEST")))
+        .andExpect(jsonPath("$.fields['userName']", is("username is required!")));
   }
 
-  @DisplayName("BadRequest should be thrown if firstName is missing for sign-up")
+  @DisplayName("Success response should be returned on user sign-up even if first name is missing")
   @Test
-  void userSignupShouldThrowExceptionIfFirstNameMissing() throws Exception {
+  void userSignupShouldBeSuccessfulForMissingFirstName() throws Exception {
 
     user.setFirstName(null);
 
@@ -87,12 +90,12 @@ class AuthControllerTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(objectMapper.writeValueAsString(user)))
         .andDo(print())
-        .andExpect(status().isBadRequest());
+        .andExpect(status().isCreated());
   }
 
-  @DisplayName("BadRequest should be thrown if lastName is missing for sign-up")
+  @DisplayName("Success response should be returned on user sign-up even if last name is missing")
   @Test
-  void userSignupShouldThrowExceptionIfLastNameMissing() throws Exception {
+  void userSignupShouldBeSuccessfulForMissingLastName() throws Exception {
 
     user.setLastName(null);
 
@@ -102,7 +105,7 @@ class AuthControllerTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(objectMapper.writeValueAsString(user)))
         .andDo(print())
-        .andExpect(status().isBadRequest());
+        .andExpect(status().isCreated());
   }
 
   @DisplayName("BadRequest should be thrown if email is missing for sign-up")
@@ -117,7 +120,10 @@ class AuthControllerTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(objectMapper.writeValueAsString(user)))
         .andDo(print())
-        .andExpect(status().isBadRequest());
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.id", is("100001")))
+        .andExpect(jsonPath("$.code", is("BAD_REQUEST")))
+        .andExpect(jsonPath("$.fields['email']", is("email is required!")));
   }
 
   @DisplayName("BadRequest should be thrown if password is missing for sign-up")
@@ -132,7 +138,10 @@ class AuthControllerTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(objectMapper.writeValueAsString(user)))
         .andDo(print())
-        .andExpect(status().isBadRequest());
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.id", is("100001")))
+        .andExpect(jsonPath("$.code", is("BAD_REQUEST")))
+        .andExpect(jsonPath("$.fields['password']", is("password is required!")));
   }
 
   @DisplayName("Success response should be returned on valid user sign-up")
@@ -159,7 +168,10 @@ class AuthControllerTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(objectMapper.writeValueAsString(userLogin)))
         .andDo(print())
-        .andExpect(status().isBadRequest());
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.id", is("100001")))
+        .andExpect(jsonPath("$.code", is("BAD_REQUEST")))
+        .andExpect(jsonPath("$.fields['userName']", is("user name is required!")));
   }
 
   @DisplayName("BadRequest should be thrown if password is missing for sign-in")
@@ -173,7 +185,10 @@ class AuthControllerTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(objectMapper.writeValueAsString(userLogin)))
         .andDo(print())
-        .andExpect(status().isBadRequest());
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.id", is("100001")))
+        .andExpect(jsonPath("$.code", is("BAD_REQUEST")))
+        .andExpect(jsonPath("$.fields['password']", is("password is required!")));
   }
 
   @DisplayName("Generate access token is valid user login is provided for sign-in")

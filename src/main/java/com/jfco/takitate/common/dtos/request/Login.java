@@ -6,9 +6,9 @@ import javax.validation.constraints.NotBlank;
 
 @Data
 public class Login {
-  @NotBlank(message = "User name is missing!")
+  @NotBlank(message = "user name is required!")
   private String userName;
 
-  @NotBlank(message = "Password is missing!")
+  @NotBlank(message = "password is required!")
   private String password;
 }

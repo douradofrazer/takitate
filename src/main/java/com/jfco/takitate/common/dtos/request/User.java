@@ -9,10 +9,8 @@ public class User {
   @NotBlank(message = "username is required!")
   private String userName;
 
-  @NotBlank(message = "first name is required!")
   private String firstName;
 
-  @NotBlank(message = "last name is required!")
   private String lastName;
 
   @NotBlank(message = "email is required!")
